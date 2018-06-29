@@ -5,3 +5,8 @@ consumers:
     key_auths:
       - key: my-api-key
         present: yes
+
+services:
+  - name: mock
+    url: http://mockbin.org
+    present: yes

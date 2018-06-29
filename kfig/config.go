@@ -9,6 +9,8 @@ import (
 // https://docs.konghq.com/0.13.x/admin-api
 type Config struct {
 	Consumers []Consumer
+	
+	Services []Service
 }
 
 func handleCall(code string, err error) {
@@ -39,6 +41,18 @@ func (c Config) callConsumers(api string) {
 
 		} else {
 			handleCall(consumer.delete(api))
+		}
+	}
+}
+
+func (c Config) callServices(api string) {
+	for i, service := range c.Services {
+		fmt.Printf("[s%d]%s\n", i, service.sprint())
+
+		if service.Present {
+			handleCall(service.createOrUpdate(api))
+		} else {
+			handleCall(service.delete(api))
 		}
 	}
 }

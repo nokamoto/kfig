@@ -13,7 +13,7 @@ type KeyAuth struct {
 }
 
 func (k KeyAuth) sprint() string {
-	return fmt.Sprintf(" key=%s, present=%s", k.Key, prettyBool(k.Present))
+	return prettyObj(k.Present, k)
 }
 
 // https://docs.konghq.com/plugins/key-authentication/#create-a-key

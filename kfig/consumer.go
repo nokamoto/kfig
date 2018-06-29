@@ -17,15 +17,7 @@ type Consumer struct {
 }
 
 func (c Consumer) sprint() string {
-	s := ""
-	if c.Username != nil {
-		s += fmt.Sprintf(" username=%s", *c.Username)
-	}
-	if c.CustomID != nil {
-		s += fmt.Sprintf(" custom_id=%s", *c.CustomID)
-	}
-	s += prettyBool(c.Present)
-	return s
+	return prettyObj(c.Present, c)
 }
 
 func (c Consumer) identifier() (string, error) {

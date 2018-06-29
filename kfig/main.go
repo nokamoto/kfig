@@ -39,4 +39,6 @@ func main() {
 	}
 
 	config.callConsumers(*api)
+
+	config.callServices(*api)
 }

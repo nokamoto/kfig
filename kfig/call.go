@@ -41,6 +41,22 @@ func callCreate(api string, ok []int, obj interface{}) (string, error) {
 	return handleResponse(http.Post(api, "application/json", bytes.NewBuffer(data)))(ok)
 }
 
+func callPatch(api string, ok []int, obj interface{}) (string, error) {
+	data, err := json.Marshal(obj)
+	if err != nil {
+		return "", err
+	}
+
+	req, err := http.NewRequest("PATCH", api, bytes.NewBuffer(data))
+	if err != nil {
+		return "", nil
+	}
+	req.Header.Add("Content-Type", "application/json")
+
+	client := &http.Client{}
+	return handleResponse(client.Do(req))(ok)
+}
+
 func callDelete(api string, ok []int) (string, error) {
 	req, err := http.NewRequest("DELETE", api, nil)
 	if err != nil {
