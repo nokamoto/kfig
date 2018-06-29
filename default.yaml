@@ -2,3 +2,6 @@ consumers:
   - username: nokamoto
     custom_id: nokamoto
     present: yes
+    key_auths:
+      - key: my-api-key
+        present: yes

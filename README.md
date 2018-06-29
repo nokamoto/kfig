@@ -22,6 +22,7 @@ $ make
 $ docker-compose up -d
 $ kfig
 $ curl localhost:8001/consumers
+$ curl localhost:8001/key-auths
 ```
 
 ## Yaml
@@ -31,4 +32,9 @@ consumers:
   - username: nokamoto
     custom_id: nokamoto
     present: yes
+
+    # https://docs.konghq.com/plugins/key-authentication
+    key_auths:
+      - key: my-api-key
+        present: yes
 ```

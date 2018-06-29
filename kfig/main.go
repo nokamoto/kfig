@@ -38,23 +38,5 @@ func main() {
 		fmt.Println("ok")
 	}
 
-	for i, consumer := range config.Consumers {
-		fmt.Printf("[c%d]%s\n", i, consumer.sprint())
-
-		if consumer.Present {
-			if code, err := consumer.create(*api); err != nil {
-				fmt.Fprintln(os.Stderr, err)
-				os.Exit(1)
-			} else {
-				fmt.Println(code)
-			}
-		} else {
-			if code, err := consumer.delete(*api); err != nil {
-				fmt.Fprintln(os.Stderr, err)
-				os.Exit(1)
-			} else {
-				fmt.Println(code)
-			}
-		}
-	}
+	config.callConsumers(*api)
 }
