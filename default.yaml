@@ -1,0 +1,4 @@
+consumers:
+  - username: nokamoto
+    custom_id: nokamoto
+    present: yes
