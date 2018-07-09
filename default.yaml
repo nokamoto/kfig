@@ -10,3 +10,8 @@ services:
   - name: mock
     url: http://mockbin.org
     present: yes
+    routes:
+      - hosts:
+          - example.com
+        protocols:
+          - http

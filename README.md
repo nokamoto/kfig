@@ -44,4 +44,12 @@ services:
   - name: mock
     url: http://mockbin.org
     present: yes
+
+    # https://docs.konghq.com/0.13.x/admin-api/#route-object
+    # `present` field unsupported (kong does not provide any user defined identifiers for the route entities.)
+    routes:
+      - hosts:
+          - example.com
+        protocols:
+          - http
 ```

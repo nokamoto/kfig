@@ -1,6 +1,8 @@
 package main
 
 import (
+	"encoding/json"
+	"io/ioutil"
 	"errors"
 	"net/http"
 	"fmt"
@@ -22,6 +24,8 @@ type Service struct {
 	URL *string `yaml:"url" json:"url"`
 
 	Present bool `json:"-"`
+
+	Routes []Route `json:"-"`
 }
 
 func (s Service) sprint() string {
@@ -57,4 +61,50 @@ func (s Service) delete(api string) (string, error) {
 	}
 
 	return callDelete(fmt.Sprintf("%s/services/%s", api, *s.Name), []int{204})
+}
+
+// https://docs.konghq.com/0.13.x/admin-api/#list-routes-associated-to-a-service
+func (s Service) routes(api string) ([]Route, error) {
+	if s.Name == nil {
+		return nil, errors.New("name not found")
+	}
+
+	var f func(string) ([]Route, error)
+
+	f = func(url string) ([]Route, error) {
+		res, err := http.Get(url)
+		if err != nil {
+			return nil, err
+		}
+		defer res.Body.Close()
+	
+		body, err := ioutil.ReadAll(res.Body)
+		if err != nil {
+			return nil, err
+		}
+	
+		if res.StatusCode != 200 {
+			return nil, fmt.Errorf("%d - %s", res.StatusCode, string(body))
+		}
+	
+		retrive := retriveRoute{}
+	
+		if err := json.Unmarshal(body, &retrive); err != nil {
+			return nil, err
+		}
+
+		routes := retrive.Data
+
+		if retrive.Next != nil {
+			next, err := f(*retrive.Next)
+			if err != nil {
+				return nil, err
+			}
+			routes = append(routes, next...)
+		}
+
+		return routes, nil
+	}
+
+	return f(fmt.Sprintf("%s/services/%s/routes", api, *s.Name))
 }

@@ -51,6 +51,28 @@ func (c Config) callServices(api string) {
 
 		if service.Present {
 			handleCall(service.createOrUpdate(api))
+
+			routes, err := service.routes(api)
+			if err != nil {
+				fmt.Fprintln(os.Stderr, err)
+				os.Exit(1)
+			}
+
+			added := addedRoutes(routes, service.Routes)
+			removed := removedRoutes(routes, service.Routes)
+
+			fmt.Printf("[s%d] %d routes, %d added %d removed\n", i, len(routes), len(added), len(removed))
+
+			for j, route := range added {
+				fmt.Printf("[s%dra%d]%s\n", i, j, route.sprint())
+				handleCall(route.add(api, service))
+			}
+
+			for j, route := range removed {
+				fmt.Printf("[s%drr%d]%s\n", i, j, route.sprint())
+				handleCall(route.remove(api))
+			}
+
 		} else {
 			handleCall(service.delete(api))
 		}
