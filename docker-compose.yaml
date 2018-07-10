@@ -36,3 +36,9 @@ services:
     ports:
       - "8000:8000"
       - "8001:8001"
+
+  golang:
+    image: "golang:1.10.3"
+    working_dir: "/go/src/github.com/nokamoto/kfig"
+    volumes:
+      - ".:/go/src/github.com/nokamoto/kfig"

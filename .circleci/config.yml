@@ -1,0 +1,22 @@
+# https://circleci.com/docs/2.0/language-go/
+version: 2
+jobs:
+  build:
+    # https://circleci.com/docs/2.0/executor-types/#using-machine
+    # > Note: Use of machine may require additional fees in a future pricing update.
+    machine: true
+    
+    steps:
+      - checkout
+
+      - run:
+          name: Start containers
+          command: docker-compose up -d
+
+      - run: 
+          name: Verify containers
+          command: ./.circleci/verify.sh
+
+      - run:
+          name: Test kfig
+          command: docker-compose run golang make docker-compose
