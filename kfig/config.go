@@ -45,34 +45,44 @@ func (c Config) callConsumers(api string) {
 	}
 }
 
+func (Config) callPlugins(api string, service Service, i int) {
+	for j, plugin := range service.Plugins {
+		fmt.Printf("[s%dp%d]%s\n", i, j, plugin.sprint())
+		handleCall(plugin.createOrUpdate(api, service))
+	}
+}
+
+func (Config) callRoutes(api string, service Service, i int) {
+	routes, err := service.routes(api)
+	if err != nil {
+		fmt.Fprintln(os.Stderr, err)
+		os.Exit(1)
+	}
+
+	added := addedRoutes(routes, service.Routes)
+	removed := removedRoutes(routes, service.Routes)
+
+	fmt.Printf("[s%d] %d routes, %d added %d removed\n", i, len(routes), len(added), len(removed))
+
+	for j, route := range added {
+		fmt.Printf("[s%dra%d]%s\n", i, j, route.sprint())
+		handleCall(route.add(api, service))
+	}
+
+	for j, route := range removed {
+		fmt.Printf("[s%drr%d]%s\n", i, j, route.sprint())
+		handleCall(route.remove(api))
+	}
+}
+
 func (c Config) callServices(api string) {
 	for i, service := range c.Services {
 		fmt.Printf("[s%d]%s\n", i, service.sprint())
 
 		if service.Present {
 			handleCall(service.createOrUpdate(api))
-
-			routes, err := service.routes(api)
-			if err != nil {
-				fmt.Fprintln(os.Stderr, err)
-				os.Exit(1)
-			}
-
-			added := addedRoutes(routes, service.Routes)
-			removed := removedRoutes(routes, service.Routes)
-
-			fmt.Printf("[s%d] %d routes, %d added %d removed\n", i, len(routes), len(added), len(removed))
-
-			for j, route := range added {
-				fmt.Printf("[s%dra%d]%s\n", i, j, route.sprint())
-				handleCall(route.add(api, service))
-			}
-
-			for j, route := range removed {
-				fmt.Printf("[s%drr%d]%s\n", i, j, route.sprint())
-				handleCall(route.remove(api))
-			}
-
+			c.callRoutes(api, service, i)
+			c.callPlugins(api, service, i)
 		} else {
 			handleCall(service.delete(api))
 		}

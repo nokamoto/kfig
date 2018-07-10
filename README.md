@@ -52,4 +52,12 @@ services:
           - example.com
         protocols:
           - http
+
+    # https://docs.konghq.com/0.13.x/admin-api/#plugin-object
+    # `present` field unsupported (use `enabled` instead)
+    plugins:
+      - name: key-auth
+        config:
+          hide_credentials: yes
+        enabled: yes
 ```

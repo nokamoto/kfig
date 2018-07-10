@@ -15,3 +15,8 @@ services:
           - example.com
         protocols:
           - http
+    plugins:
+      - name: key-auth
+        config:
+          hide_credentials: yes
+        enabled: yes

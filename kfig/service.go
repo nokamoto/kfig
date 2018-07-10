@@ -1,8 +1,6 @@
 package main
 
 import (
-	"encoding/json"
-	"io/ioutil"
 	"errors"
 	"net/http"
 	"fmt"
@@ -26,6 +24,8 @@ type Service struct {
 	Present bool `json:"-"`
 
 	Routes []Route `json:"-"`
+
+	Plugins []Plugin `json:"-"`
 }
 
 func (s Service) sprint() string {
@@ -72,24 +72,9 @@ func (s Service) routes(api string) ([]Route, error) {
 	var f func(string) ([]Route, error)
 
 	f = func(url string) ([]Route, error) {
-		res, err := http.Get(url)
-		if err != nil {
-			return nil, err
-		}
-		defer res.Body.Close()
-	
-		body, err := ioutil.ReadAll(res.Body)
-		if err != nil {
-			return nil, err
-		}
-	
-		if res.StatusCode != 200 {
-			return nil, fmt.Errorf("%d - %s", res.StatusCode, string(body))
-		}
-	
 		retrive := retriveRoute{}
-	
-		if err := json.Unmarshal(body, &retrive); err != nil {
+
+		if err := callGet(url, []int{200}, &retrive); err != nil {
 			return nil, err
 		}
 
@@ -107,4 +92,19 @@ func (s Service) routes(api string) ([]Route, error) {
 	}
 
 	return f(fmt.Sprintf("%s/services/%s/routes", api, *s.Name))
+}
+
+// https://docs.konghq.com/0.13.x/admin-api/#list-all-plugins
+func (s Service) plugins(api string) ([]Plugin, error) {
+	if s.Name == nil {
+		return nil, errors.New("name not found")
+	}
+
+	retrive := retrivePlugin{}
+
+	if err := callGet(fmt.Sprintf("%s/services/%s/plugins", api, *s.Name), []int{200}, &retrive); err != nil {
+		return nil, err
+	}
+
+	return retrive.Data, nil
 }

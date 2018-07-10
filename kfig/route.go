@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"errors"
 	"reflect"
-	"encoding/json"
 )
 
 // Route defines rules to match client requests.
@@ -26,11 +25,7 @@ type Route struct {
 }
 
 func (r Route) sprint() string {
-	data, err := json.Marshal(r)
-	if err != nil {
-		panic(err)
-	}
-	return string(data)
+	return prettyJSONObj(r)
 }
 
 func (r Route) functionallyEqual(obj Route) bool {
