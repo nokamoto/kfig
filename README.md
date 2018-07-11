@@ -1,5 +1,7 @@
 # Kfig
 
+[![CircleCI](https://circleci.com/gh/nokamoto/kfig/tree/master.svg?style=svg)](https://circleci.com/gh/nokamoto/kfig/tree/master)
+
 Kfig is a cli tool to configure [kong](https://github.com/Kong/kong) with a yaml file.
 
 ## Usage
