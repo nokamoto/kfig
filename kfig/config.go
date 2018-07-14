@@ -3,6 +3,7 @@ package main
 import (
 	"os"
 	"fmt"
+	"gopkg.in/yaml.v2"
 )
 
 // Config for Kong Admin API.
@@ -22,7 +23,17 @@ func handleCall(code string, err error) {
 	}
 }
 
-func (c Config) callConsumers(api string) {
+// NewConfig makes Config from the yaml string.
+func NewConfig(data []byte) (*Config, error) {
+	config := Config{}
+	if err := yaml.Unmarshal(data, &config); err != nil {
+		return nil, err
+	}
+	return &config, nil
+}
+
+// CallConsumers calls consumer apis.
+func (c *Config) CallConsumers(api string) {
 	for i, consumer := range c.Consumers {
 		fmt.Printf("[c%d]%s\n", i, consumer.sprint())
 
@@ -75,7 +86,8 @@ func (Config) callRoutes(api string, service Service, i int) {
 	}
 }
 
-func (c Config) callServices(api string) {
+// CallServices calls service apis.
+func (c *Config) CallServices(api string) {
 	for i, service := range c.Services {
 		fmt.Printf("[s%d]%s\n", i, service.sprint())
 

@@ -2,7 +2,6 @@ package main
 
 import "fmt"
 import "flag"
-import "gopkg.in/yaml.v2"
 import "io/ioutil"
 import "os"
 import "net/http"
@@ -20,8 +19,8 @@ func main() {
 		os.Exit(1)
 	}
 
-	config := Config{}
-	if err := yaml.Unmarshal(data, &config); err != nil {
+	config, err := NewConfig(data)
+	if err != nil {
 		fmt.Fprintf(os.Stderr, "%s is not valid: %s\n", *filename, err)
 		os.Exit(1)
 	}
@@ -38,7 +37,7 @@ func main() {
 		fmt.Println("ok")
 	}
 
-	config.callConsumers(*api)
+	config.CallConsumers(*api)
 
-	config.callServices(*api)
+	config.CallServices(*api)
 }
