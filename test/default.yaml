@@ -1,0 +1,33 @@
+consumers:
+  - username: c0
+    custom_id: c0
+    present: yes
+    key_auths:
+      - key: k0
+        present: yes
+
+      - key: k1
+        present: no
+
+  - username: c1
+    custom_id: c1
+    present: yes
+
+services:
+  - name: s0
+    url: http://mockbin.org
+    present: yes
+    routes:
+      - hosts:
+          - example.com
+        protocols:
+          - http
+    plugins:
+      - name: key-auth
+        config:
+          hide_credentials: yes
+        enabled: yes
+
+  - name: s1
+    url: http://mockbin.org
+    present: no
