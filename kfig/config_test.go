@@ -6,7 +6,8 @@ import (
 	"testing"
 )
 
-var api = flag.String("admin", "http://localhost:8001", "a kong admin api")
+var api = flag.String("admin", "http://localhost:8001", "")
+var mock = flag.String("mock", "http://localhost:8000", "")
 
 func init() {
 	flag.Parse()

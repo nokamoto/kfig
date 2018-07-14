@@ -37,7 +37,15 @@ func main() {
 		fmt.Println("ok")
 	}
 
-	config.CallConsumers(*api)
+	err = config.CallConsumers(*api)
+	if err != nil {
+		fmt.Fprintln(os.Stderr, err)
+		os.Exit(1)
+	}
 
-	config.CallServices(*api)
+	err = config.CallServices(*api)
+	if err != nil {
+		fmt.Fprintln(os.Stderr, err)
+		os.Exit(1)
+	}
 }
